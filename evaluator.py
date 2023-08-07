@@ -76,6 +76,7 @@ if __name__ == "__main__":
         "--agentArgs": ["fn=q1c_solver,prob=q1c_problem"],
         "--layout": question_1c_layouts,
         "--outfile": ["question_1c"],
+        "--timeout":[0.5]
         }
     
     question_2a_patterns = "q2a_*.lay"
