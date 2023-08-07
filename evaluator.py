@@ -16,6 +16,7 @@ def run(all_arguments: Dict):
     print(all_arguments)
     for command in linear_product(all_arguments):
         command.append("-q")
+        command.append("-c")
         subprocess.call(command)
 
 
@@ -84,6 +85,7 @@ if __name__ == "__main__":
         "--pacman": ["Q2A_Agent"],
         "--layout": question_2a_layouts,
         "--outfile": ["question_2a"],
+        "--timeout":[0.5]
         }
     
     question_2b_patterns = "q2b_*.lay"
@@ -93,6 +95,7 @@ if __name__ == "__main__":
         "--pacman": ["Q2B_Agent"],
         "--layout": question_2b_layouts,
         "--outfile": ["question_2b"],
+        "--timeout":[0.5]
         }
     
     run(question_1a_args)

@@ -529,7 +529,7 @@ def readCommand( argv ):
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
     parser.add_option('-c', '--catchExceptions', action='store_true', dest='catchExceptions',
                       help='Turns on exception handling and timeouts during games', default=False)
-    parser.add_option('--timeout', dest='timeout', type='int',
+    parser.add_option('--timeout', dest='timeout', type='float',
                       help=default('Maximum length of time an agent can spend computing in a single game'), default=30)
     parser.add_option('-o', '--outfile', dest='outfile',
                       help='file name for log output', default=None)
