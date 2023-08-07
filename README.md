@@ -1,31 +1,23 @@
-## Master Branch WITHOUT Code
+## Assignment 1 Branch
 
-This is the master branch of the repo for FIT3080. This branch does not include any code. Please navigate to the branch specified in your assignment sheet after cloning the repo.
-
-Assignment 1 is on branch: asgn1_for_students
-
-If you are unsure on how to clone our repo and navigate to the relevant branch, please contact us over the Ed forum, in your class or during consultation hours. We're happy to help get you set up for the assignments!
+This is the assignment 1 branch of the repo for FIT3080. This branch contains all the code you need for assignment 1. To get started with the assignment please follow the instructuions or in the getting started guide to clone the repo. 
+If you are unsure on how to clone our repo and navigate to the relevant branch, or have trouble with the instructions below, please contact us over the Ed forum, in your class or during consultation hours. We're happy to help get you set up for the assignments!
 
 ---
 
-## Clone a repository
+## Clone this repository
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+Run the following in the command line in the directory where you would like this repo to be stored.
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+git clone --branch assignment1 https://bitbucket.org/shortestpathlab/fit3080.git
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+You can also use [SourceTree](https://www.sourcetreeapp.com/) to clone the repo without using the command line. We recommend you use the command line as it is good practice and less work overall. 
+If you decide to use SourceTree then be aware that the teaching doesn't have experience with it and may not be able to help you if you get stuck. There should be plenty of resources to help you online though.    
 
 ---
 
-## Navigate to a branch
+## Next Steps
 
-After cloning, perform these steps to navigate to the correct branch for the assignment.
+Once you have cloned the repository you should finish reading the getting started guide and explore the code. Once you've finished with that you should be very prepared to tackle the assignment!
 
-1. In your command line, navigate to the folder of our repo (it contains this file). Then execute the following commands in your command line. You need to have git set up on your computer for this.
-2. git fetch
-3. git branch -v -a
-4. git switch asgn1_for_students
+---
