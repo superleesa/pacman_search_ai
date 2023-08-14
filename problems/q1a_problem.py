@@ -44,7 +44,6 @@ class q1a_problem:
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
-
     def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
@@ -59,6 +58,8 @@ class q1a_problem:
 
         logger = logging.getLogger('root')
         logger.info('getSuccessors')
+
+        # ------------------------------------------
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 

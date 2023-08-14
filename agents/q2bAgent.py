@@ -3,7 +3,9 @@ import random
 
 import util
 from game import Actions, Agent, Directions
+from pacman import GameState
 from util import manhattanDistance
+
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -22,7 +24,7 @@ class Q2B_Agent(Agent):
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
 
-    def getAction(self, gameState):
+    def getAction(self, gameState: GameState):
         """
             Returns the minimax action from the current gameState using self.depth
             and self.evaluationFunction.

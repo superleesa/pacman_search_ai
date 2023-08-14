@@ -4,6 +4,7 @@ from typing import Tuple
 
 import util
 from game import Actions, Agent, Directions
+from pacman import GameState
 
 
 class q1b_problem:
@@ -13,7 +14,7 @@ class q1b_problem:
     You must select a suitable state space and successor function
     """
 
-    def __init__(self, gameState):
+    def __init__(self, gameState: GameState):
         """
         Stores the start and goal.
 
@@ -21,7 +22,7 @@ class q1b_problem:
         costFn: A function from a search state (tuple) to a non-negative number
         goal: A position in the gameState
         """
-        self.startingGameState = gameState
+        self.startingGameState: GameState = gameState
 
     def getStartState(self):
         logger = logging.getLogger('root')

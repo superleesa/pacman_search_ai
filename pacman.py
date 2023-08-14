@@ -673,7 +673,7 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
 
         # pick the next layout. We might cycle around and repeat layouts that we've already done if numGames is large enough
         nextLayout = getLayout(layoutNames[(i % len(layoutNames))])
-        if nextLayout == None: raise Exception("The layout " + nextLayout + " cannot be found")
+        if nextLayout == None: raise Exception("The layout file cannot be found")
 
         game = rules.newGame( nextLayout, pacman, ghosts, gameDisplay, beQuiet, catchExceptions)
         game.run()
@@ -681,9 +681,8 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
 
 
         if record:
-            import time
-
             import pickle
+            import time
             fname = ('./recordings/recorded-game-%d' % (i + 1)) +  '-'.join([str(t) for t in time.localtime()[1:6]])
             f = open(fname, 'wb')
             components = {'layout': layout, 'actions': game.moveHistory}

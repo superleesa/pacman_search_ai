@@ -1,11 +1,10 @@
 import glob
-import subprocess
 import os
+import subprocess
 import sys
-from itertools import product, chain
-from typing import Dict, List
+from itertools import chain, product
 from optparse import OptionParser
-
+from typing import Dict, List
 
 
 def linear_product(parameters: Dict) -> List[str]:
@@ -76,7 +75,7 @@ if __name__ == "__main__":
         "--agentArgs": ["fn=q1c_solver,prob=q1c_problem"],
         "--layout": question_1c_layouts,
         "--outfile": ["question_1c"],
-        "--timeout":[0.5]
+        "--timeout":["0.5"]
         }
     
     question_2a_patterns = "q2a_*.lay"
@@ -86,7 +85,7 @@ if __name__ == "__main__":
         "--pacman": ["Q2A_Agent"],
         "--layout": question_2a_layouts,
         "--outfile": ["question_2a"],
-        "--timeout":[0.5]
+        "--timeout":["0.5"]
         }
     
     question_2b_patterns = "q2b_*.lay"
@@ -96,7 +95,7 @@ if __name__ == "__main__":
         "--pacman": ["Q2B_Agent"],
         "--layout": question_2b_layouts,
         "--outfile": ["question_2b"],
-        "--timeout":[0.5]
+        "--timeout":["0.5"]
         }
     
     run(question_1a_args)
