@@ -598,14 +598,15 @@ class Game:
                 self.mute(i)
                 if self.catchExceptions:
                     try:
-                        timed_func = TimeoutFunction(agent.registerInitialState, int(self.rules.getMaxStartupTime(i)))
+                        timed_func = TimeoutFunction(agent.registerInitialState, self.rules.getMaxStartupTime(i))
                         try:
                             start_time = time.time()
                             timed_func(self.state.deepCopy())
                             time_taken = time.time() - start_time
                             self.totalAgentTimes[i] += time_taken
                         except TimeoutFunctionException:
-                            print >>sys.stderr, "Agent %d ran out of time on startup!" % i
+                            logger.error(f"Agent {i} ran out of time on startup!")
+                            print(f"Agent {i} ran out of time on startup!")
                             self.unmute()
                             self.agentTimeout = True
                             self._agentCrash(i, quiet=True)
@@ -635,7 +636,7 @@ class Game:
                 self.mute(agentIndex)
                 if self.catchExceptions:
                     try:
-                        timed_func = TimeoutFunction(agent.observationFunction, int(self.rules.getMoveTimeout(agentIndex)))
+                        timed_func = TimeoutFunction(agent.observationFunction, self.rules.getMoveTimeout(agentIndex))
                         try:
                             start_time = time.time()
                             observation = timed_func(self.state.deepCopy())
@@ -660,14 +661,15 @@ class Game:
             self.mute(agentIndex)
             if self.catchExceptions:
                 try:
-                    timed_func = TimeoutFunction(agent.getAction, int(self.rules.getMoveTimeout(agentIndex)) - int(move_time))
+                    timed_func = TimeoutFunction(agent.getAction, self.rules.getMoveTimeout(agentIndex) - move_time)
                     try:
                         start_time = time.time()
                         if skip_action:
                             raise TimeoutFunctionException()
                         action = timed_func( observation )
                     except TimeoutFunctionException:
-                        print >>sys.stderr, "Agent %d timed out on a single move!" % agentIndex
+                        logger.error(f"Agent {agentIndex} timed out on a single move!")
+                        print(f"Agent {agentIndex} timed out on a single move!")
                         self.agentTimeout = True
                         self._agentCrash(agentIndex, quiet=True)
                         self.unmute()
