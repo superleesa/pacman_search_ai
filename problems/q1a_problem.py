@@ -2,9 +2,13 @@ import logging
 import time
 from typing import Tuple
 
-import util
-from game import Actions, Agent, Directions
-from pacman import GameState
+# import util
+# from game import Actions, Agent, Directions
+# from pacman import GameState
+
+from .. import util
+from ..game import Actions, Agent, Directions
+from ..pacman import GameState
 
 
 class q1a_problem:
@@ -33,8 +37,7 @@ class q1a_problem:
         logger.info('getStartState')
         
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        return self.startingGameState
 
 
     def isGoalState(self, state):
@@ -42,9 +45,9 @@ class q1a_problem:
         logger.info('isGoalState')
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state.hasFood()
 
-    def getSuccessors(self, state):
+    def getSuccessors(self, state: GameState):
         """
         Returns successor states, the actions they require, and a cost of 1.
 
@@ -61,5 +64,20 @@ class q1a_problem:
 
         # ------------------------------------------
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        successors = []
+        legal_actions = state.getLegalActions(0)
+
+        for action in legal_actions:
+            # ignore stop move
+            if action is Directions.STOP:
+                continue
+
+            successor = state.generateSuccessor(0, action)
+            step_cost = 1  # step cost always 1 in this problem
+            successors.append((successor, action, step_cost))
+
+        return successors
+
+
 
