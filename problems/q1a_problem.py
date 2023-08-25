@@ -1,6 +1,7 @@
 import logging
 import time
 from typing import Tuple
+from math import inf
 
 # import util
 # from game import Actions, Agent, Directions
@@ -9,6 +10,15 @@ from typing import Tuple
 from .. import util
 from ..game import Actions, Agent, Directions
 from ..pacman import GameState
+
+class State:
+    def __init__(self, game_state):
+        self.game_state = game_state
+
+        self.prev = None
+        self.g = inf
+        self.f = None
+        self.action_used_to_come_to_this_state = None
 
 
 class q1a_problem:
@@ -37,17 +47,17 @@ class q1a_problem:
         logger.info('getStartState')
         
         "*** YOUR CODE HERE ***"
-        return self.startingGameState
+        return State(self.startingGameState)
 
 
-    def isGoalState(self, state):
+    def isGoalState(self, state: State):
         logger = logging.getLogger('root')
         logger.info('isGoalState')
 
         "*** YOUR CODE HERE ***"
-        return state.hasFood()
+        return state.game_state.hasFood(*state.getPacmanPosition())
 
-    def getSuccessors(self, state: GameState):
+    def getSuccessors(self, state: State) -> list[tuple[State, Directions, float]]:
         """
         Returns successor states, the actions they require, and a cost of 1.
 
@@ -65,17 +75,19 @@ class q1a_problem:
         # ------------------------------------------
         "*** YOUR CODE HERE ***"
 
+
         successors = []
-        legal_actions = state.getLegalActions(0)
+        legal_actions = state.game_state.getLegalActions(0)
 
         for action in legal_actions:
             # ignore stop move
             if action is Directions.STOP:
                 continue
 
-            successor = state.generateSuccessor(0, action)
-            step_cost = 1  # step cost always 1 in this problem
-            successors.append((successor, action, step_cost))
+            successor = state.game_state.generateSuccessor(0, action)
+            successor_state = State(successor)
+            step_cost = state.g + 1  # step cost always 1 in this problem
+            successors.append((successor_state, action, step_cost))
 
         return successors
 
