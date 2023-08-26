@@ -45,11 +45,9 @@ def q1a_solver(problem: q1a_problem):
     
     actions = []
     while reached.count > 0:
-
-        # TODO tie breaking
         current_state = reached.pop()
 
-        print(current_state.game_state.getPacmanPosition(), current_state.g)
+        # print(current_state.game_state.getPacmanPosition(), current_state.g)
 
         if problem.isGoalState(current_state):
             actions = reconstruct_actions(initial_state, current_state)
@@ -60,7 +58,7 @@ def q1a_solver(problem: q1a_problem):
 
             # if never visited => reachable_state.g will return inf => will be OPENED
             # if VISITED and no need to update => will skip this section
-            # if VISITED but requires update => will be added to OPEN again
+            # if VISITED but requires update => will be added to OPEN again (does not happen in this problem)
             # print(tentative_cost, reachable_state.g)
             if tentative_cost < reachable_state.g:
 
@@ -73,6 +71,6 @@ def q1a_solver(problem: q1a_problem):
 
 
                 if reachable_state not in reached.heap:
-                    reached.push(reachable_state, reachable_state.f)
+                    reached.push(reachable_state, (reachable_state.f, h))
 
     return actions
