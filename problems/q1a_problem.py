@@ -3,15 +3,22 @@ import time
 from typing import Tuple
 from math import inf
 
-# import util
-# from game import Actions, Agent, Directions
-# from pacman import GameState
+import util
+from game import Actions, Agent, Directions
+from pacman import GameState
 
-from .. import util
-from ..game import Actions, Agent, Directions
-from ..pacman import GameState
+# from .. import util
+# from ..game import Actions, Agent, Directions
+# from ..pacman import GameState
+
+def get_food_position(food_array):
+    for r in range(len(food_array)):
+        for c in range(len(food_array[0])):
+            if food_array[r][c]:
+                return r, c
 
 class State:
+    # given x and y, this class must be unique
     def __init__(self, game_state):
         self.game_state = game_state
 
@@ -42,20 +49,27 @@ class q1a_problem:
         """
         self.startingGameState: GameState = gameState
 
+        # need to book keep all discovered states
+        self.all_states = {}
+
     def getStartState(self):
         logger = logging.getLogger('root')
         logger.info('getStartState')
         
         "*** YOUR CODE HERE ***"
-        return State(self.startingGameState)
+        initial_state = State(self.startingGameState)
+        self.all_states[initial_state.game_state.getPacmanPosition()] = initial_state
+        return initial_state
 
 
-    def isGoalState(self, state: State):
+    def isGoalState(self, state: State) -> bool:
         logger = logging.getLogger('root')
         logger.info('isGoalState')
 
         "*** YOUR CODE HERE ***"
-        return state.game_state.hasFood(*state.getPacmanPosition())
+
+        # if pacman goes to a location where the food is, it will automatically eat it -> no food will be on the map
+        return get_food_position(state.game_state.getFood().asList()) is None
 
     def getSuccessors(self, state: State) -> list[tuple[State, Directions, float]]:
         """
@@ -78,14 +92,18 @@ class q1a_problem:
 
         successors = []
         legal_actions = state.game_state.getLegalActions(0)
-
         for action in legal_actions:
             # ignore stop move
             if action is Directions.STOP:
                 continue
 
             successor = state.game_state.generateSuccessor(0, action)
-            successor_state = State(successor)
+            if successor.getPacmanPosition() in self.all_states:
+                successor_state = self.all_states[successor.getPacmanPosition()]
+            else:
+                successor_state = State(successor)
+                self.all_states[successor_state.game_state.getPacmanPosition()] = successor_state
+
             step_cost = state.g + 1  # step cost always 1 in this problem
             successors.append((successor_state, action, step_cost))
 
