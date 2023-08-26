@@ -617,6 +617,9 @@ class TimeoutFunctionException(Exception):
     """Exception to raise on a timeout"""
     pass
 
+class OutOfActions(Exception):
+    """Exception to raise when out of actions"""
+    pass
 
 class TimeoutFunction:
     def __init__(self, function, timeout):

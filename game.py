@@ -674,6 +674,9 @@ class Game:
                         self._agentCrash(agentIndex, quiet=True)
                         self.unmute()
                         return
+                    except OutOfActions:
+                        self.state.data._win = True
+                        return 
 
                     move_time += time.time() - start_time
 

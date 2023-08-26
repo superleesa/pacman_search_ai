@@ -102,4 +102,7 @@ class SearchAgent(Agent):
         if i < len(self.actions):
             return self.actions[i]
         else:
-            return Directions.STOP
+            logger = logging.getLogger('root')
+            logger.info('Out of actions')
+            logger.info(f"Remaining Food: {state.getNumFood()}")
+            raise util.OutOfActions('Out of actions')
