@@ -36,18 +36,21 @@ def q1a_solver(problem: q1a_problem):
     # NOTE: position uniquely defines a state
 
     # implement A*
-    reached = util.PriorityQueue()
+    reached = util.PriorityQueue()  # note the priority should a form of (f, h)
     initial_state = problem.getStartState()
     initial_state.g = 0
 
     food_position = get_food_position(initial_state.game_state.getFood().asList())
-    reached.push(initial_state, heuristic(initial_state.game_state.getPacmanPosition(), food_position))
+    initial_state_h = heuristic(initial_state.game_state.getPacmanPosition(), food_position)
+    reached.push(initial_state, (initial_state_h, initial_state_h))
+
+    print(food_position)
     
     actions = []
     while reached.count > 0:
         current_state = reached.pop()
 
-        # print(current_state.game_state.getPacmanPosition(), current_state.g)
+        print(current_state.game_state.getPacmanPosition(), current_state.g)
 
         if problem.isGoalState(current_state):
             actions = reconstruct_actions(initial_state, current_state)

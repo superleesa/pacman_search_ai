@@ -5,7 +5,32 @@ from typing import Tuple
 import util
 from game import Actions, Agent, Directions
 from pacman import GameState
+from problems.q1a_problem import State, get_food_position
 
+
+# in this problem, each state is uniquely defined by position (x, y) AND remaining_food
+def get_state_key(game_state):
+    all_food = frozenset(game_state.getFood().asList())
+    pacman_position = game_state.getPacmanPosition()
+    return pacman_position, all_food
+
+# class StateQ2(State):
+#     def __init__(self, game_state):
+#         super().__init__(game_state)
+#         self.all_food = frozenset(self.game_state.getFood.asList())
+#
+#     def create_key(self):
+#         return self.game_state.getPacmanPosition(), self.all_food
+#
+#     def _get_all_food_positions_as_tuples(self, food_list):
+#         food_positions = []
+#
+#         for r in range(len(food_list)):
+#             for c in range(len(food_list)):
+#                 if food_list[r][c]:
+#                     food_positions.append((r, c))
+#
+#         return food_positions
 
 class q1b_problem:
     """
@@ -24,12 +49,17 @@ class q1b_problem:
         """
         self.startingGameState: GameState = gameState
 
+        # need to book keep all discovered states
+        self.all_states = {}
+
     def getStartState(self):
         logger = logging.getLogger('root')
         logger.info('getStartState')
         
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        initial_state = State(self.startingGameState)
+        self.all_states[get_state_key(initial_state.game_state)] = initial_state
+        return initial_state
 
 
     def isGoalState(self, state):
@@ -37,7 +67,8 @@ class q1b_problem:
         logger.info('isGoalState')
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # if there is no food at all, it's a goal
+        return get_food_position(state.game_state.getFood().asList()) is None
 
 
     def getSuccessors(self, state):
@@ -55,5 +86,24 @@ class q1b_problem:
         logger = logging.getLogger('root')
         logger.info('getSuccessors')
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        successors = []
+        legal_actions = state.game_state.getLegalActions(0)
+        for action in legal_actions:
+            # ignore stop move
+            if action is Directions.STOP:
+                continue
+
+            successor = state.game_state.generateSuccessor(0, action)
+            state_key = get_state_key(successor)
+            if state_key in self.all_states:
+                successor_state = self.all_states[state_key]
+            else:
+                successor_state = State(successor)
+                self.all_states[state_key] = successor_state
+
+            step_cost = state.g + 1  # step cost always 1 in this problem
+            successors.append((successor_state, action, step_cost))
+
+        return successors
 
