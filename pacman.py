@@ -364,8 +364,6 @@ class PacmanRules:
         x,y = position
         # Eat food
         if state.data.food[x][y]:
-            logger = logging.getLogger('root')
-            logger.info('eatFruit')
             state.data.scoreChange += 10
             state.data.food = state.data.food.copy()
             state.data.food[x][y] = False
@@ -377,8 +375,6 @@ class PacmanRules:
                 state.data._win = True
         # Eat capsule
         if( position in state.getCapsules() ):
-            logger = logging.getLogger('root')
-            logger.info('eatCapsule')
             state.data.capsules.remove( position )
             state.data._capsuleEaten = position
             # Reset all ghosts' scared timers
@@ -531,8 +527,29 @@ def readCommand( argv ):
                       help='Turns off exception handling and timeouts during games', default=True)
     parser.add_option('--timeout', dest='timeout', type='int',
                       help=default('Maximum length of time an agent can spend computing in a single game'), default=30)
-    parser.add_option('-o', '--outfile', dest='outfile',
-                      help='file name for log output', default=None)
+
+    def vararg_callback(option, opt_str, value, parser):
+        assert value is None
+        value = []
+
+        for arg in parser.rargs:
+            if arg[:2] == "--" and len(arg) > 2:
+                break
+            if arg[:1] == "-" and len(arg) > 1:
+                break
+            value.append(arg)
+            break
+
+        del parser.rargs[:len(value)]
+
+        if value == []:
+            value.append("")
+
+        setattr(parser.values, option.dest, value[0])
+
+    parser.add_option('-o', '--outfile', dest='outfile', action="callback", callback=vararg_callback,
+                      help='output file name', default=None)
+
 
     options, otherjunk = parser.parse_args(argv)
     if len(otherjunk) != 0:
@@ -584,7 +601,9 @@ def readCommand( argv ):
     args['record'] = options.record
     args['catchExceptions'] = options.catchExceptions
     args['timeout'] = options.timeout
-    args['outfile'] = options.outfile
+    args['outfile'] = options.outfile 
+    print(options.outfile)
+
 
     # Special case: recorded games don't use the runGames method or args structure
     if options.gameToReplay != None:
@@ -691,18 +710,24 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
 
     if (numGames-numTraining) > 0:
         scores = [game.state.getScore() for game in games]
-        wins = [game.state.isWin() for game in games]
-        winRate = wins.count(True)/ float(len(wins))
-        print(f"Remaining Food: {game.state.getNumFood()}")
+        remaining_foods = [game.state.getNumFood() for game in games]
+        wins = [int(game.state.isWin()) for game in games]
+        
+        # Change win to draw if remaining food still on map
+        for i in range(len(wins)): 
+            if wins[i] and remaining_foods[i] > 0: wins[i] = 2
+
+        winRate = wins.count(1)/ float(len(wins))
+        print(f"Remaining Food: {', '.join([str(rf) for rf in remaining_foods])}")
         print('Average Score:', sum(scores) / float(len(scores)))
         print('Scores:       ', ', '.join([str(score) for score in scores]))
-        print('Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))
-        print('Record:       ', ', '.join([ ['Loss', 'Win'][int(w)] for w in wins]))
+        print('Win Rate:      %d/%d (%.2f)' % (wins.count(1), len(wins), winRate))
+        print('Record:       ', ', '.join([ ['Loss', 'Win', "Draw"][int(w)] for w in wins]))
 
-        logger.warning('Average Score: %.2f', sum(scores) / float(len(scores)))
-        logger.warning('Scores: ' + ', '.join([str(score) for score in scores]))
-        logger.warning('Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))
-        logger.warning('Record:       ' + ', '.join([ ['Loss', 'Win'][int(w)] for w in wins]))
+        logger.info('Average Score: %.2f', sum(scores) / float(len(scores)))
+        logger.info('Scores: ' + ', '.join([str(score) for score in scores]))
+        logger.info('Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))
+        logger.info('Record:       ' + ', '.join([ ['Loss', 'Win', 'Draw'][int(w)] for w in wins]))
 
     return games
 
@@ -719,11 +744,9 @@ if __name__ == '__main__':
     """
     args = readCommand( sys.argv[1:] ) # Get game components based on input
     search_logger.search_logger(args['outfile'])
-    logger = logging.getLogger('root')
-    logger.info('main')
-    logger.info('input_args'+str(args))
+    logger = logging.getLogger('main')
+    logger.info(f"input_args: {args.items()}")
     runGames( **args )
-    logger.info('main')
 
     # import cProfile
     # cProfile.run("runGames( **args )")

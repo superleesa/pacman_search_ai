@@ -7,6 +7,19 @@ from optparse import OptionParser
 from typing import Dict, List
 
 
+def disclaimer() -> bool:
+    message = """
+    -------------------------------------------------------------------------------
+                                    ATTENTION
+
+    Please ensure you are up to date with the latest code changes. Failing to stay 
+    updated with the latest code changes puts your work at risk of not being 
+    evaluated correctly.
+    -------------------------------------------------------------------------------
+    I CONFIRM I HAVE PULLED THE LATEST VERSION OF ASSIGNMENT: [y/N] """
+
+    return input(message)
+
 def linear_product(parameters: Dict) -> List[str]:
     for experiment in product(*parameters.values()):
         yield list(chain(*zip(parameters, experiment)))
@@ -15,6 +28,7 @@ def run(all_arguments: Dict):
     print(all_arguments)
     for command in linear_product(all_arguments):
         command.append("-q")
+        command.append("-f")
         subprocess.call(command)
 
 
@@ -78,6 +92,13 @@ if __name__ == "__main__":
         "--timeout":["30"]
         }
     
+
+    
+    if disclaimer() != "y":
+        print("")
+        exit()
+
+
     run(question_1a_args)
     run(question_1b_args)
     run(question_1c_args)

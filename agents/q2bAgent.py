@@ -3,6 +3,7 @@ import random
 
 import util
 from game import Actions, Agent, Directions
+from logs.search_logger import log_function
 from pacman import GameState
 from util import manhattanDistance
 
@@ -24,6 +25,7 @@ class Q2B_Agent(Agent):
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
 
+    @log_function
     def getAction(self, gameState: GameState):
         """
             Returns the minimax action from the current gameState using self.depth

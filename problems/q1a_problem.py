@@ -4,6 +4,7 @@ from typing import Tuple
 
 import util
 from game import Actions, Agent, Directions
+from logs.search_logger import log_function
 from pacman import GameState
 
 
@@ -17,6 +18,8 @@ class q1a_problem:
 
     Note: this search problem is fully specified; you should NOT change it.
     """
+    def __str__(self):
+        return str(self.__class__.__module__)
 
     def __init__(self, gameState: GameState):
         """
@@ -28,22 +31,18 @@ class q1a_problem:
         """
         self.startingGameState: GameState = gameState
 
+    @log_function
     def getStartState(self):
-        logger = logging.getLogger('root')
-        logger.info('getStartState')
-        
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
 
-
+    @log_function
     def isGoalState(self, state):
-        logger = logging.getLogger('root')
-        logger.info('isGoalState')
-
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
+    @log_function
     def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
@@ -55,11 +54,8 @@ class q1a_problem:
          required to get there, and 'stepCost' is the incremental
          cost of expanding to that successor
         """
-
-        logger = logging.getLogger('root')
-        logger.info('getSuccessors')
-
         # ------------------------------------------
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+
 
