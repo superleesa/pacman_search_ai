@@ -24,6 +24,7 @@ import os
 import sys
 import time
 import traceback
+from math import ceil
 
 from util import *
 
@@ -47,6 +48,9 @@ class Agent:
         must return an action from Directions.{North, South, East, West, Stop}
         """
         raiseNotDefined()
+    
+    def __str__(self):
+        return str(self.__class__.__module__)
 
 class Directions:
     NORTH = 'North'
@@ -112,8 +116,6 @@ class Configuration:
 
         Actions are movement vectors.
         """
-        logger = logging.getLogger('root')
-        logger.info('generateSuccessor')
         x, y= self.pos
         dx, dy = vector
         direction = Actions.vectorToDirection(vector)
@@ -367,8 +369,6 @@ class Actions:
     getLegalNeighbors = staticmethod(getLegalNeighbors)
 
     def getSuccessor(position, action):
-        logger = logging.getLogger('root')
-        logger.info('generateSuccessor')
         dx, dy = Actions.directionToVector(action)
         x, y = position
         return (x + dx, y + dy)
@@ -621,10 +621,10 @@ class Game:
                 self.unmute()
 
         agentIndex = self.startingIndex
-        numAgents = len(self.agents)
-        logger.warning('#agents:'+str(numAgents))
-        logger.warning('#pacman:' + str(1))
-        logger.warning('#ghosts:' + str(numAgents - 1))
+        numAgents = len( self.agents )
+        logger.info('#agents:'+str(numAgents))
+        logger.info('#pacman:' + str(1))
+        logger.info('#ghosts:' + str(numAgents - 1))
 
         while not self.gameOver:
             # Fetch the next agent
@@ -650,26 +650,24 @@ class Game:
                         return
                 else:
                     observation = agent.observationFunction(self.state.deepCopy())
-                    logger.warning('observation: ' + str(observation))
                 self.unmute()
             else:
                 observation = self.state.deepCopy()
-                logger.warning('observation: ' + str(observation))
 
             # Solicit an action
             action = None
             self.mute(agentIndex)
             if self.catchExceptions:
                 try:
-                    timed_func = TimeoutFunction(agent.getAction, self.rules.getMoveTimeout(agentIndex) - move_time)
+                    timed_func = TimeoutFunction(agent.getAction, ceil(self.rules.getMoveTimeout(agentIndex) - self.totalAgentTimes[agentIndex]))
                     try:
                         start_time = time.time()
                         if skip_action:
                             raise TimeoutFunctionException()
                         action = timed_func( observation )
                     except TimeoutFunctionException:
-                        logger.error(f"Agent {agentIndex} timed out on a single move!")
-                        print(f"Agent {agentIndex} timed out on a single move!")
+                        logger.error(f"Agent {agentIndex} timed out!")
+                        print(f"Agent {agentIndex} timed out!")
                         self.agentTimeout = True
                         self._agentCrash(agentIndex, quiet=True)
                         self.unmute()
@@ -705,7 +703,6 @@ class Game:
                     return
             else:
                 action = agent.getAction(observation)
-                logger.warning('action: '+str(action))
             self.unmute()
 
             # Execute the action
@@ -719,12 +716,7 @@ class Game:
                     self.unmute()
                     return
             else:
-                self.state = self.state.generateSuccessor( agentIndex, action )
-                logger.warning('state: '+str(self.state))
-
-            logger.warning('moveTime: '+str(move_time))
-            logger.warning('moveHistory: ' + str(self.moveHistory))
-            logger.warning('pathLength: ' + str(len(self.moveHistory)))
+                self.state = self.state.generateSuccessor( agentIndex, action)
 
             # Change the display
             self.display.update( self.state.data )
@@ -740,6 +732,9 @@ class Game:
 
             if _BOINC_ENABLED:
                 boinc.set_fraction_done(self.getProgress())
+
+        logger.info('moveHistory: ' + str(self.moveHistory))
+        logger.info('pathLength: ' + str(len(self.moveHistory)))
 
         # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):

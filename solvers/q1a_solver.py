@@ -28,9 +28,6 @@ def heuristic(self_position, food_position):
     return util.manhattanDistance(self_position, food_position)
 
 def q1a_solver(problem: q1a_problem):
-    logger = logging.getLogger('root')
-    logger.info('question 1a')
-
     "*** YOUR CODE HERE ***"
 
     # NOTE: position uniquely defines a state
@@ -45,7 +42,7 @@ def q1a_solver(problem: q1a_problem):
     reached.push(initial_state, (initial_state_h, initial_state_h))
 
     print(food_position)
-    
+
     actions = []
     while reached.count > 0:
         current_state = reached.pop()

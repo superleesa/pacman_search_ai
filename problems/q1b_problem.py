@@ -4,6 +4,7 @@ from typing import Tuple
 
 import util
 from game import Actions, Agent, Directions
+from logs.search_logger import log_function
 from pacman import GameState
 from problems.q1a_problem import State, get_food_position
 
@@ -38,6 +39,8 @@ class q1b_problem:
 
     You must select a suitable state space and successor function
     """
+    def __str__(self):
+        return str(self.__class__.__module__)
 
     def __init__(self, gameState: GameState):
         """
@@ -52,25 +55,20 @@ class q1b_problem:
         # need to book keep all discovered states
         self.all_states = {}
 
+    @log_function
     def getStartState(self):
-        logger = logging.getLogger('root')
-        logger.info('getStartState')
-        
         "*** YOUR CODE HERE ***"
         initial_state = State(self.startingGameState)
         self.all_states[get_state_key(initial_state.game_state)] = initial_state
         return initial_state
 
-
+    @log_function
     def isGoalState(self, state):
-        logger = logging.getLogger('root')
-        logger.info('isGoalState')
-
         "*** YOUR CODE HERE ***"
         # if there is no food at all, it's a goal
         return get_food_position(state.game_state.getFood().asList()) is None
 
-
+    @log_function
     def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
@@ -82,9 +80,6 @@ class q1b_problem:
          required to get there, and 'stepCost' is the incremental
          cost of expanding to that successor
         """
-
-        logger = logging.getLogger('root')
-        logger.info('getSuccessors')
         "*** YOUR CODE HERE ***"
 
         successors = []

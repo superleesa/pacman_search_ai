@@ -5,6 +5,7 @@ from math import inf
 
 import util
 from game import Actions, Agent, Directions
+from logs.search_logger import log_function
 from pacman import GameState
 
 # from .. import util
@@ -38,6 +39,8 @@ class q1a_problem:
 
     Note: this search problem is fully specified; you should NOT change it.
     """
+    def __str__(self):
+        return str(self.__class__.__module__)
 
     def __init__(self, gameState: GameState):
         """
@@ -48,30 +51,29 @@ class q1a_problem:
         goal: A position in the gameState
         """
         self.startingGameState: GameState = gameState
-
+        
         # need to book keep all discovered states
         self.all_states = {}
 
+    @log_function
     def getStartState(self):
-        logger = logging.getLogger('root')
-        logger.info('getStartState')
-        
         "*** YOUR CODE HERE ***"
         initial_state = State(self.startingGameState)
         self.all_states[initial_state.game_state.getPacmanPosition()] = initial_state
         return initial_state
 
 
+    @log_function
     def isGoalState(self, state: State) -> bool:
         logger = logging.getLogger('root')
         logger.info('isGoalState')
 
         "*** YOUR CODE HERE ***"
-
         # if pacman goes to a location where the food is, it will automatically eat it -> no food will be on the map
         return get_food_position(state.game_state.getFood().asList()) is None
 
-    def getSuccessors(self, state: State) -> list[tuple[State, Directions, float]]:
+    @log_function
+    def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
 
@@ -82,10 +84,6 @@ class q1a_problem:
          required to get there, and 'stepCost' is the incremental
          cost of expanding to that successor
         """
-
-        logger = logging.getLogger('root')
-        logger.info('getSuccessors')
-
         # ------------------------------------------
         "*** YOUR CODE HERE ***"
 

@@ -1,9 +1,11 @@
 import logging
 from math import inf
+import random
 
 # import util
 # from game import Actions, Agent, Directions
-# from pacman import GameState
+# from logs.search_logger import log_function
+from pacman import GameState
 # from util import manhattanDistance
 
 from .. import util
@@ -34,6 +36,7 @@ class Q2A_Agent(Agent):
         # self.weight_scared_ghosts = 30
         # self.weight_health = 100
 
+    @log_function
     def getAction(self, gameState: GameState):
         """
             Returns the minimax action from the current gameState using self.depth
