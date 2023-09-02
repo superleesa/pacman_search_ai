@@ -7,6 +7,7 @@ import util
 from game import Actions, Agent, Directions
 from logs.search_logger import log_function
 from pacman import GameState
+from logs.search_logger import log_function
 
 # from .. import util
 # from ..game import Actions, Agent, Directions

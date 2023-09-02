@@ -7,6 +7,7 @@ from game import Actions, Agent, Directions
 from logs.search_logger import log_function
 from pacman import GameState
 from problems.q1a_problem import State, get_food_position
+from logs.search_logger import log_function
 
 
 # in this problem, each state is uniquely defined by position (x, y) AND remaining_food

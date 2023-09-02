@@ -7,6 +7,9 @@ from game import Actions, Agent, Directions
 from logs.search_logger import log_function
 from pacman import GameState
 
+from problems.q1b_problem import get_state_key
+from problems.q1a_problem import State, get_food_position
+from logs.search_logger import log_function
 
 class q1c_problem:
     """
@@ -27,15 +30,21 @@ class q1c_problem:
         """
         self.startingGameState: GameState = gameState
 
+        # need to book keep all discovered states
+        self.all_states = {}
+
     @log_function
     def getStartState(self):
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        initial_state = State(self.startingGameState)
+        self.all_states[get_state_key(initial_state.game_state)] = initial_state
+        return initial_state
 
     @log_function
     def isGoalState(self, state):
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # if there is no food at all, it's a goal
+        return get_food_position(state.game_state.getFood().asList()) is None
 
     @log_function
     def getSuccessors(self, state):
@@ -50,5 +59,23 @@ class q1c_problem:
          cost of expanding to that successor
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        successors = []
+        legal_actions = state.game_state.getLegalActions(0)
+        for action in legal_actions:
+            # ignore stop move
+            if action is Directions.STOP:
+                continue
+
+            successor = state.game_state.generateSuccessor(0, action)
+            state_key = get_state_key(successor)
+            if state_key in self.all_states:
+                successor_state = self.all_states[state_key]
+            else:
+                successor_state = State(successor)
+                self.all_states[state_key] = successor_state
+
+            step_cost = state.g + 1  # step cost always 1 in this problem
+            successors.append((successor_state, action, step_cost))
+
+        return successors
 

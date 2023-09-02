@@ -8,10 +8,16 @@ import random
 from pacman import GameState
 # from util import manhattanDistance
 
-from .. import util
-from ..game import Actions, Agent, Directions
-from ..pacman import GameState
-from ..util import manhattanDistance
+import util
+from game import Actions, Agent, Directions
+from pacman import GameState
+from util import manhattanDistance
+from logs.search_logger import log_function
+
+# from .. import util
+# from ..game import Actions, Agent, Directions
+# from ..pacman import GameState
+# from ..util import manhattanDistance
 
 
 def scoreEvaluationFunction(currentGameState):
@@ -58,7 +64,10 @@ class Q2A_Agent(Agent):
         logger.info('MinimaxAgent')
         "*** YOUR CODE HERE ***"
 
-        return self.alpha_beta_search(gameState)
+        oup = self.alpha_beta_search(gameState)
+        print(oup)
+        print("======================================")
+        return oup
 
     def alpha_beta_search(self, game_state):
         alpha = -inf
@@ -67,22 +76,30 @@ class Q2A_Agent(Agent):
 
     def max_(self, game_state: GameState, alpha: float, beta: float, current_depth: int):
         # base case
-        if current_depth == self.depth * game_state.getNumAgents() - 1:
+        if current_depth == self.depth * game_state.getNumAgents():
+            print(scoreEvaluationFunction(game_state))
             return scoreEvaluationFunction(game_state)
 
         max_backed_up_value = -inf
         max_backed_up_value_action = None
         actions = game_state.getLegalActions(0)
+
+        print("max turn")
         for action in actions:
+
             successor_state = game_state.generateSuccessor(0, action)
             backed_up_value = self.min_(successor_state, alpha, beta, current_depth + 1)
             if backed_up_value > max_backed_up_value:
                 max_backed_up_value = backed_up_value
                 max_backed_up_value_action = action
 
+
             # beta pruning
             if max_backed_up_value >= beta:
+                print("beta cut occured", max_backed_up_value, beta)
                 break
+
+            alpha = max(alpha, max_backed_up_value)
 
         # return state (not evaluation score) if the root node
         if current_depth == 0:
@@ -95,25 +112,37 @@ class Q2A_Agent(Agent):
         """keep calling min until ghost's turn finishes"""
 
         # base case
-        if current_depth == self.depth * game_state.getNumAgents() - 1:
+        if current_depth == self.depth * game_state.getNumAgents():
             return scoreEvaluationFunction(game_state)
 
         num_agents = game_state.getNumAgents()
-        current_agent = num_agents % current_depth
-        next_agent = num_agents % (current_depth + 1)
+        current_agent = current_depth % num_agents
+        next_agent = (current_depth + 1) % num_agents
+
+        # IMPORTANT: if lose (eaten by ghost), this ghost does not have any actions -> just return the score already
+        # todo: chnage this from win+lose to something more versaile like
+        if game_state.isLose() or game_state.isWin():
+            return scoreEvaluationFunction(game_state)
+
+
         actions = game_state.getLegalActions(current_agent)
+        print("min turn")
 
         # if next agent is pacman -> stop calling MIN; call MAX
         if next_agent == 0:
             min_backed_up_value = inf
             for action in actions:
                 successor_state = game_state.generateSuccessor(current_agent, action)
+                backed_up_value = self.max_(successor_state, alpha, beta, current_depth + 1)
                 min_backed_up_value = min(min_backed_up_value,
-                                          self.max_(successor_state, alpha, beta, current_depth + 1))
+                                          backed_up_value)
 
                 # alpha-pruning
                 if min_backed_up_value <= alpha:
+                    print("alpha cut occured")
                     break
+
+                beta = min(beta, min_backed_up_value)
 
 
         # else (next agent is ghost) -> continue to call min
@@ -128,32 +157,6 @@ class Q2A_Agent(Agent):
                 if min_backed_up_value <= alpha:
                     break
 
-        return min_backed_up_value
+                beta = min(beta, min_backed_up_value)
 
-    # def evaluate_state(self, game_state: GameState):
-    #     """
-    #     note: evaluation score bigger the better
-    #     """
-    #     # number of food collected
-    #     num_food_left = game_state.getNumFood()
-    #
-    #     sum_scared_ghost_time = sum([agent_state.scaredTimer for agent_state in
-    #                                  game_state.getGhostStates()])  # sum of time left for scared ghost
-    #
-    #     pacman_position = game_state.getPacmanPosition()  # next to the ghost means pacman can be killed in the next phase
-    #
-    #     # get the distance to the closest pacman -> reduce this distance not the sum of the distance to phosts
-    #     ghost_positions = game_state.getGhostPositions()
-    #     distance_to_closest_ghost = inf
-    #     for ghost_position in ghost_positions:
-    #         ghost_distance = manhattanDistance(pacman_position, ghost_position)
-    #         if ghost_distance < distance_to_closest_ghost:
-    #             distance_to_closest_ghost = ghost_distance
-    #
-    #     # TODO if only one food is left -> add additional score
-    #     # TODO more complex conditions if time allows
-    #     evaluation_score = - self.weight_food * num_food_left \
-    #                        + self.weight_scared_ghosts * sum_scared_ghost_time \
-    #                        + self.weight_health * distance_to_closest_ghost
-    #
-    #     return evaluation_score
+        return min_backed_up_value
