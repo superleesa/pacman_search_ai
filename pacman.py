@@ -601,9 +601,7 @@ def readCommand( argv ):
     args['record'] = options.record
     args['catchExceptions'] = options.catchExceptions
     args['timeout'] = options.timeout
-    args['outfile'] = options.outfile 
-    print(options.outfile)
-
+    args['outfile'] = options.outfile
 
     # Special case: recorded games don't use the runGames method or args structure
     if options.gameToReplay != None:
@@ -710,6 +708,8 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
 
     if (numGames-numTraining) > 0:
         scores = [game.state.getScore() for game in games]
+        move_histories = [game.moveHistory for game in games]
+        path_lengths = [len(move_history) for move_history in move_histories]
         remaining_foods = [game.state.getNumFood() for game in games]
         wins = [int(game.state.isWin()) for game in games]
         
@@ -719,11 +719,16 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
 
         winRate = wins.count(1)/ float(len(wins))
         print(f"Remaining Food: {', '.join([str(rf) for rf in remaining_foods])}")
+        print('moveHistory: ' + str(move_histories))
+        print('pathLength: ' + str(path_lengths))
         print('Average Score:', sum(scores) / float(len(scores)))
         print('Scores:       ', ', '.join([str(score) for score in scores]))
         print('Win Rate:      %d/%d (%.2f)' % (wins.count(1), len(wins), winRate))
         print('Record:       ', ', '.join([ ['Loss', 'Win', "Draw"][int(w)] for w in wins]))
 
+        logger.info(f"Remaining Food: {', '.join([str(rf) for rf in remaining_foods])}")
+        logger.info('moveHistory: ' + str(move_histories))
+        logger.info('pathLength: ' + str(path_lengths))
         logger.info('Average Score: %.2f', sum(scores) / float(len(scores)))
         logger.info('Scores: ' + ', '.join([str(score) for score in scores]))
         logger.info('Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))

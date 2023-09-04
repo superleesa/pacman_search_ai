@@ -25,7 +25,7 @@ import sys
 import time
 import traceback
 from math import ceil
-
+from logs.search_logger import log_function
 from util import *
 
 #######################
@@ -377,6 +377,8 @@ class Actions:
 
 
 class GameStateData:
+
+    verbose: bool = True
     """
 
     """
@@ -441,6 +443,10 @@ class GameStateData:
         return int((hash(tuple(self.agentStates)) + 13*hash(self.food) + 113* hash(tuple(self.capsules)) + 7 * hash(self.score)) % 1048575 )
 
     def __str__( self ):
+
+        if not GameStateData.verbose:
+            return f"Position {self.agentStates[0].getPosition()}"
+    
         width, height = self.layout.width, self.layout.height
         map = Grid(width, height)
         if type(self.food) == type((1,2)):
@@ -677,6 +683,7 @@ class Game:
                         return 
 
                     move_time += time.time() - start_time
+                    log_function.flush()
 
                     if move_time > self.rules.getMoveWarningTime(agentIndex):
                         self.totalAgentTimeWarnings[agentIndex] += 1
@@ -733,8 +740,6 @@ class Game:
             if _BOINC_ENABLED:
                 boinc.set_fraction_done(self.getProgress())
 
-        logger.info('moveHistory: ' + str(self.moveHistory))
-        logger.info('pathLength: ' + str(len(self.moveHistory)))
 
         # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):

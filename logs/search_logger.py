@@ -12,6 +12,12 @@ import functools
 import logging as log
 
 
+
+def _flush():
+    for function_name, log_string in log_function.buffer:
+          log.getLogger(function_name).info(log_string)
+    log_function.buffer.clear()
+
 def log_function(func: callable):
     """
     a log decorator for writing the inputs parameters and the return value of a function to a file.
@@ -20,14 +26,16 @@ def log_function(func: callable):
     def wrapper(*args, **kwargs):
             if log_function.remaining_log_calls <= 0: return func(*args, **kwargs)
 
-            logger = log.getLogger(func.__name__)
-            logger.info(f"I: {','.join(list(map(str, args)))},{','.join(list(map(str, kwargs)))}")
+            log_function.buffer.append((func.__name__, f"I: {','.join(list(map(str, args)))},{','.join(list(map(str, kwargs)))}"))
             result = func(*args, **kwargs)
-            logger.info(f"O: {result}")
+            log_function.buffer.append((func.__name__, f"O: {result}"))
 
             log_function.remaining_log_calls -= 1
             return result
+    
+    log_function.buffer = []
     log_function.remaining_log_calls = 1000
+    log_function.flush = _flush
     return wrapper
 
 

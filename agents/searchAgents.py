@@ -40,7 +40,7 @@ import time
 import util
 from game import Actions, Agent, Directions
 from logs.search_logger import log_function
-from pacman import GameState
+from pacman import GameState, GameStateData
 
 
 class SearchAgent(Agent):
@@ -63,6 +63,7 @@ class SearchAgent(Agent):
     def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
         # Warning: some advanced Python magic is employed below to find the right functions and problems
 
+        GameStateData.verbose = False
         function = util.import_by_name('./solvers', fn)
         problem = util.import_by_name('./problems', prob)
 
@@ -90,7 +91,6 @@ class SearchAgent(Agent):
         totalCost = len(self.actions)
         print('Path found with total cost of %d in %.10f seconds' % (totalCost, time.time() - starttime))
 
-    @log_function
     def getAction(self, state: GameState):
         """
         Returns the next action in the path chosen earlier (in
