@@ -44,7 +44,7 @@ def q1a_solver(problem: q1a_problem):
     print(food_position)
 
     actions = []
-    while reached.count > 0:
+    while not reached.isEmpty():
         current_state = reached.pop()
 
         print(current_state.game_state.getPacmanPosition(), current_state.g)

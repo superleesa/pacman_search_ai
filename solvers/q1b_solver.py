@@ -59,7 +59,7 @@ def q1b_solver(problem: q1b_problem):
     reached.push(initial_state, (initial_state_h, initial_state_h))
 
     actions = []
-    while reached.count > 0:
+    while not reached.isEmpty():
         current_state = reached.pop()
 
         print(current_state.game_state.getPacmanPosition(), current_state.g)

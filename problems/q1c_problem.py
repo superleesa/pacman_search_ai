@@ -29,6 +29,7 @@ class q1c_problem:
         goal: A position in the gameState
         """
         self.startingGameState: GameState = gameState
+        self.num_food_initial = gameState.getNumFood()
 
         # need to book keep all discovered states
         self.all_states = {}

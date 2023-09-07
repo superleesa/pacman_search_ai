@@ -12,7 +12,7 @@ from logs.search_logger import log_function
 
 # in this problem, each state is uniquely defined by position (x, y) AND remaining_food
 def get_state_key(game_state):
-    all_food = frozenset(game_state.getFood().asList())
+    all_food = hash(game_state.getFood())
     pacman_position = game_state.getPacmanPosition()
     return pacman_position, all_food
 

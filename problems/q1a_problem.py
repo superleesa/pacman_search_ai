@@ -29,6 +29,8 @@ class State:
         self.f = None
         self.action_used_to_come_to_this_state = None
 
+        self.in_heap = False
+
 
 class q1a_problem:
     """

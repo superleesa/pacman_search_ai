@@ -39,10 +39,6 @@ class Q2A_Agent(Agent):
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
 
-        # self.weight_food = 10
-        # self.weight_scared_ghosts = 30
-        # self.weight_health = 100
-
         self.num_paths_with_max_score = 0  # keep track of the paths with the same score as the current max score
         self.prev_turn_action = None
         self.same_as_prev_action_chosen = False
@@ -71,8 +67,7 @@ class Q2A_Agent(Agent):
         "*** YOUR CODE HERE ***"
 
         oup = self.alpha_beta_search(gameState)
-        print(oup)
-        print("======================================")
+        # print("======================================")
         return oup
 
     def alpha_beta_search(self, game_state):
@@ -83,12 +78,11 @@ class Q2A_Agent(Agent):
     def max_(self, game_state: GameState, alpha: float, beta: float, current_depth: int):
         # base case
         if current_depth == self.depth * game_state.getNumAgents():
-            print(scoreEvaluationFunction(game_state))
+            # print(scoreEvaluationFunction(game_state))
             return scoreEvaluationFunction(game_state), []
 
         # if pacman's dead -> return the score already
         if game_state.isLose() or game_state.isWin():
-            print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             return scoreEvaluationFunction(game_state), []
 
         max_backed_up_value = -inf
@@ -96,11 +90,9 @@ class Q2A_Agent(Agent):
         actions = game_state.getLegalActions(0)
         shallowest_collected_food_depths = []
 
-        # delete this later on
-        scores = []
 
-        print(f"depth {current_depth}, max turn")
-        print("actions", actions)
+        # print(f"depth {current_depth}, max turn")
+        # print("actions", actions)
         for action in actions:
 
             successor_state = game_state.generateSuccessor(0, action)
@@ -112,10 +104,6 @@ class Q2A_Agent(Agent):
                                                                          current_depth + 1)
             collected_food_depths.extend(collected_food_depths_ancestors)
 
-            # delete this later on
-            if current_depth == 0:
-                scores.append(backed_up_value)
-                print("backed_up_value: ", backed_up_value)
 
             # check if this value is bigger than the current biggest value
             is_bigger = backed_up_value > max_backed_up_value
@@ -160,7 +148,7 @@ class Q2A_Agent(Agent):
 
             # beta pruning
             if max_backed_up_value > beta:
-                print("beta cut occured", max_backed_up_value, beta)
+                # print("beta cut occured", max_backed_up_value, beta)
                 break
 
             alpha = max(alpha, max_backed_up_value)
@@ -169,7 +157,6 @@ class Q2A_Agent(Agent):
         if current_depth == 0:
             self.prev_turn_action = max_backed_up_value_action
             self.same_as_prev_action_chosen = False
-            print(scores)
             return max_backed_up_value_action
 
         # return max_backed_up_value in intermediate MAX nodes
@@ -189,12 +176,12 @@ class Q2A_Agent(Agent):
         # IMPORTANT: if lose (eaten by ghost), this ghost does not have any actions -> just return the score already
         # todo: chnage this from win+lose to something more versaile like
         if game_state.isLose() or game_state.isWin():
-            print("lose: score=", scoreEvaluationFunction(game_state))
+            # print("lose: score=", scoreEvaluationFunction(game_state))
             return scoreEvaluationFunction(game_state), []
 
         actions = game_state.getLegalActions(current_agent)
-        print(num_agents, current_agent, next_agent)
-        print(f"depth {current_depth}, min{current_agent} turn")
+        # print(num_agents, current_agent, next_agent)
+        # print(f"depth {current_depth}, min{current_agent} turn")
 
         min_backed_up_value = inf
         collected_food_depths_for_min_backed_value_path = []
@@ -218,7 +205,7 @@ class Q2A_Agent(Agent):
             # alpha-pruning
             # note: does not include equal, (if you include, even though there are paths that lead to worse score, this node can be chosen)
             if min_backed_up_value < alpha:
-                print("alpha cut occured")
+                # print("alpha cut occured")
                 break
 
             beta = min(beta, min_backed_up_value)
@@ -247,7 +234,7 @@ class Q2A_Agent(Agent):
         return False
 
     def _capsule_tie_breaking(self, state):
-        print("capsule:", state.getCapsules(), state.getPacmanPosition())
+        # print("capsule:", state.getCapsules(), state.getPacmanPosition())
         if state.getPacmanPosition() in state.getCapsules():
             self.capsule_path_selected = True
             return True
