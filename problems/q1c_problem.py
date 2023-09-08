@@ -38,7 +38,7 @@ class q1c_problem:
     def getStartState(self):
         "*** YOUR CODE HERE ***"
         initial_state = State(self.startingGameState)
-        self.all_states[get_state_key(initial_state.game_state)] = initial_state
+        self.all_states[get_state_key(initial_state)] = initial_state
         return initial_state
 
     @log_function
@@ -68,14 +68,16 @@ class q1c_problem:
                 continue
 
             successor = state.game_state.generateSuccessor(0, action)
-            state_key = get_state_key(successor)
+            successor_state = State(successor)
+            # state_key = state.game_state.getPacmanPosition()
+            state_key = get_state_key(successor_state)
             if state_key in self.all_states:
                 successor_state = self.all_states[state_key]
             else:
-                successor_state = State(successor)
                 self.all_states[state_key] = successor_state
 
             step_cost = state.g + 1  # step cost always 1 in this problem
+            print(step_cost)
             successors.append((successor_state, action, step_cost))
 
         return successors

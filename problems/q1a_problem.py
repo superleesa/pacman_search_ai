@@ -27,6 +27,7 @@ class State:
         self.prev = None
         self.g = inf
         self.f = None
+        self.h = None
         self.action_used_to_come_to_this_state = None
 
         self.in_heap = False
